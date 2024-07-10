@@ -1,0 +1,6 @@
+flask
+transformers
+torch
+python-dotenv
+requests
+flask-limiter

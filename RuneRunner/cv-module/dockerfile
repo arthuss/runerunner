@@ -1,0 +1,29 @@
+# Verwenden eines offiziellen Python-Runtime-Images als Basis
+FROM python:3.9-slim
+
+# Setzen des Arbeitsverzeichnisses im Container
+WORKDIR /app
+
+# Installation von System-Abhängigkeiten für OpenCV
+RUN apt-get update && apt-get install -y \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Kopieren der Anforderungsdatei und Installation der Abhängigkeiten
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Kopieren des Quellcodes in den Container
+COPY . .
+
+# Umgebungsvariable setzen, um anzuzeigen, dass wir in einem Docker-Container sind
+ENV RUNNING_IN_DOCKER Yes
+
+# Port freigeben, auf dem die Flask-App läuft
+EXPOSE 5002
+
+# Befehl zum Ausführen der Anwendung
+CMD ["python", "api.py"]

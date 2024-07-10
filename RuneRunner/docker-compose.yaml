@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  central-llm:
+    build: ./central-llm
+    volumes:
+      - ./central-llm:/app
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    ports:
+      - "5000:5000"
+    command: python api.py
+    depends_on:
+      - postgres
+
+  price-prediction:
+    build: ./price-prediction
+    volumes:
+      - ./price-prediction:/app
+    ports:
+      - "5001:5000"
+    command: python api.py
+    depends_on:
+      - postgres
+
+  cv-module:
+    build: ./cv-module
+    volumes:
+      - ./cv-module:/app
+    ports:
+      - "5002:5000"
+    command: python api.py
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: vectordb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

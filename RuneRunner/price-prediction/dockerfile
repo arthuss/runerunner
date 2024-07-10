@@ -1,0 +1,21 @@
+# Verwenden eines offiziellen Python-Runtime-Images als Basis
+FROM python:3.9-slim
+
+# Setzen des Arbeitsverzeichnisses im Container
+WORKDIR /app
+
+# Kopieren der Anforderungsdatei und Installation der Abhängigkeiten
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Kopieren des Quellcodes in den Container
+COPY . .
+
+# Umgebungsvariable setzen, um anzuzeigen, dass wir in einem Docker-Container sind
+ENV RUNNING_IN_DOCKER Yes
+
+# Port freigeben, auf dem die Flask-App läuft
+EXPOSE 5001
+
+# Befehl zum Ausführen der Anwendung
+CMD ["python", "api.py"]
